@@ -1,10 +1,12 @@
 #include<string>
 #include<cassert>
 #include<iostream>
+#include <iomanip>
 using namespace std;
 
 const size_t width = 4; //?
 typedef char elem_type;
+
 class state
 {
 private:
@@ -29,6 +31,14 @@ private:
 public:
 	state() {}
 
+	state(int empty_i, elem_type m[width*width]) : empty_ind(empty_i)
+	{
+		for (int i = 0; i < 16; i++)
+		{
+			matrix[i] = m[i];
+		}
+	}
+
 	void generate(string s)
 	{
 		assert(s.length() == 16);
@@ -36,13 +46,18 @@ public:
 		while (i < 16)
 		{
 			if (s[i] >= '0' && s[i] <= '9') matrix[i++] = s[i] - '0';
-			else matrix[i++] = s[i] - 'A';
+			else matrix[i++] = s[i] - 'A' + 10;
 		}
 	}
 
 	void print()
 	{
-		
+		for (int i = 0; i < 16; i++)
+		{
+			cout << setw(3) << left << (int)matrix[i];
+			if (i % 4 == 3)
+				cout << endl;
+		}
 	}
 
 	bool is_valid()
@@ -79,7 +94,27 @@ public:
 			cout << "INVALID MOVE" << endl;
 			return *this;
 		}
-		
+		switch (d)
+		{
+		case Up:
+			swap(matrix[empty_ind], matrix[empty_ind + 4]);
+			empty_ind = empty_ind + 4;
+			break;
+		case Down: 
+			swap(matrix[empty_ind], matrix[empty_ind - 4]);
+			empty_ind = empty_ind - 4;
+			break;
+		case Left:
+			swap(matrix[empty_ind], matrix[empty_ind + 1]);
+			empty_ind = empty_ind + 1;
+			break;
+		case Right:
+			swap(matrix[empty_ind], matrix[empty_ind - 1]);
+			empty_ind = empty_ind - 1;
+			break;
+		}
+		state new_state = state(empty_ind, matrix);
+		return(new_state);
 	}
 
 
@@ -89,14 +124,24 @@ int main()
 {
 	state s;
 	s.generate("356FA7109C2B4D8E");
+	s.print();
+	cout << endl;
 	//cout << s.is_final();
 	s.generate("123456789ABCDEF0"); // 0
-	cout << s.is_valid() << endl;
+	s.print();
+	cout << endl;
+	//cout << s.is_valid() << endl;
 	s.generate("213456789ABCDEF0"); // 1 (2 & 1)
-	cout << s.is_valid() << endl;
+	s.print();
+	cout << endl;
+	//cout << s.is_valid() << endl;
 	s.generate("123456798ABCDFE0"); // 2 (F & E, 9 & 8)
-	cout << s.is_valid() << endl;
+	s.print();
+	cout << endl;
+	//cout << s.is_valid() << endl;
 	s.generate("132456798ABCDFE0"); // 3 (3 & 2, F & E, 9 & 8)
-	cout << s.is_valid() << endl;
+	s.print();
+	cout << endl;
+	//cout << s.is_valid() << endl;
 	getchar();
 }
