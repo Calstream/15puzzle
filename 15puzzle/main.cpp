@@ -1,7 +1,7 @@
 #include<string>
 #include<cassert>
 #include<iostream>
-#include <iomanip>
+#include<iomanip>
 using namespace std;
 
 const size_t width = 4; //?
